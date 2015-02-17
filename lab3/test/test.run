@@ -1,0 +1,4 @@
+parallel ls ::: pwd ::: cd test
+sequential cd .. ::: pwd ::: ls
+sequential_or xyzad ::: sleep 2 ::: pwd
+

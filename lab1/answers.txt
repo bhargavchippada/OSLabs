@@ -1,0 +1,132 @@
+CS 377: Operating Systems Lab
+Assignment 01
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Ranveer Aggarwal - 120050020
+Bhargav Chippada - 120050053
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Question 1 [Done on Ranveer’s Machine]
+a. Cache Size of the processor is 6144 KB; Address Size: 36 bits physical, 48 bits virtual.
+from:  /proc/cpuinfo
+b. The CPU family of the processor is 6, model is 58 [Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz]. The number of cores for each processor are 4.
+from:  /proc/cpuinfo 
+c. The limit on the max number of open files is 1024 (Soft) and 4096 (Hard).
+	from: /proc/[pid]/limits
+d. Process Preemption
+Process preemption is commonly used when it comes to multitasking. In general, the Operating System prioritises the processes. It may happen that a high priority process wants to execute while some other process is already running. Then, the Operating System might decide to do a context switch and interrupt the running task to be resumed later when the high priority process has completed execution. This act is known as preemption. One of the big advantages of having a preemptive kernel is that tasks that take a long time cannot hog the system and high priority tasks wouldn’t need to wait. A disadvantage would be that it increases the kernel code complexity and a kernel programer would have to take care of more end cases. An example where this is highly advantageous is during kernel syscalls. 
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Question 2 [Done on Bhargav’s Machine]
+For ques2_1.cpp
+The time spent in user mode was 30.04 s and in kernel mode was 0.19 s.
+For ques2_2.cpp
+The time spent in user mode was 30.16 s and in kernel mode was 0.01 s.
+The time spent in user modes for both the cases is almost the same whereas the time spent in kernel mode is greater for first program compared to seconds. This is because the first program declares variables inside the loop and performs multiplication operation which need the use of hardware so is done in kernel mode.
+from: /proc/[pid]/stat	     (14th and 15th fields)
+(14) utime  %lu
+                        Amount of time that this process has been scheduled
+                        in user mode, measured in clock ticks (divide by
+                        sysconf(_SC_CLK_TCK)).  This includes guest time,
+                        guest_time (time spent running a virtual CPU, see
+                        below), so that applications that are not aware of
+                        the guest time field do not lose that time from
+                        their calculations.
+ (15) stime  %lu
+                        Amount of time that this process has been scheduled
+                        in kernel mode, measured in clock ticks (divide by
+                        sysconf(_SC_CLK_TCK)).
+
+
+Question 3 [Done on Ranveer’s Machine]
+a. Commonly occurring states in linux:
+New - The process being created.
+Ready - The process has all the resources available that it needs to run, but is waiting for the CPU.
+Running - The process's instructions are being executed.
+Waiting - The process cannot run at the moment, because it is waiting for some resource to become available or for some event to occur.
+Terminated - The process has finished.
+b. Code submitted.
+c. The Traced state denotes processes that have been stopped. A process may attach itself to another process for the purposes of debugging, monitoring and controlling execution. Whenever something like that happens in the child process it is stopped and the parent is notified, which can then decide to continue the process. So traced and debugged processes often appear in this stopped state. So basically a syscall can be used to get the process in the Traced state.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Question 4 [Done on Bhargav’s Machine]
+On running (nice -n +11 ./second output_file2 & pid1=$!;  nice -n +5 ./first output_file1 & pid2=$!; taskset -c -p 0 $pid1; taskset -c -p 0 $pid2;) command for approximately 30 seconds following are the observations:
+Note: 	 Both the programs are made to run on the same processor 0.
+From:   CPU percentages are calculated based on the cpu times from the command ‘ps ax’.
+	 number of voluntary and involuntary context switches is found from /proc/[pid]/status
+	 number of a’s is found using command ‘less output_file | wc -m’
+
+---------------------------
+For ./first with priority 5
+a. Output of first with priority 5 contained 222762436 a’s 
+b. CPU percentage consumed by this process is
+100*(24/30)
+=80% 	
+c. voluntary_ctxt_switches:    	7
+nonvoluntary_ctxt_switches: 	2724
+
+---------------------------
+For ./second with priority 11
+a. Output of second with priority 11 contained 57705595 a’s 
+b. CPU percentage consumed by this process is
+=100*(6/30)
+=20%
+c. voluntary_ctxt_switches:    	1
+nonvoluntary_ctxt_switches: 	1607
+
+On running (nice -n +11 ./second output_file2 & pid1=$!;  nice -n +20 ./first output_file1 & pid2=$!; taskset -c -p 0 $pid1; taskset -c -p 0 $pid2;) command for approximately 30 seconds following are the observations:
+
+----------------------------
+For ./first with priority 20
+a. Output of first with priority 20 contained 41618471 a’s 
+
+b. CPU percentage consumed by this process is
+=100*(4/30)
+=13.33 % 
+
+c. voluntary_ctxt_switches:2
+nonvoluntary_ctxt_switches:1151
+
+----------------------------
+For ./second with priority 11
+a. Output of second with priority 11 contained 264413671 a’s
+ 
+b. CPU percentage consumed by this process is
+=100*(26/30)
+=86.67 %	
+
+c. voluntary_ctxt_switches:3
+nonvoluntary_ctxt_switches:3048
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Question 5 [Done on Ranveer’s Machine]
+Current Load Average = 0.27 0.45 0.61 [1, 5 and 15 minute average]
+
+Load average after running ques5.c = 0.56 0.47 0.59; We see that there has been a significant increase in the 1-minute average.
+
+Here’s how the situation is. 15 minute ago, the machine was running some other program (of some other question probably). The gap between measuring the load averages without and with the process running was approximately one minute. And hence, the 1-minute average in the second case is significantly higher than the first. The 5-minute average doesn’t increase significantly, probably due to the fact that 5 minutes before 1st measurement, no heavy process ran. The 15 minute average lowered because the 15-minute window shifted, and probably the process running 15+ minutes ago was heavy.
+
+Code Submitted. We introduced a fork() inside the for loop introducing many processes. That significantly increased the system load. (3.63 1.51 0.94 after a minute of execution; 5.06 2.48 1.32 after 2 minutes)
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Question 6 [Done on Bhargav’s Laptop]
+a. 8
+From: SigCgt field of /proc/[pid]/status
+
+b. Signal number corresponds to Floating point exception
+From: Linux Signal Manpages
+
+c. Go to /proc/[pid] folder and open status file. Signal number of the Interrupt signal is found at the entry of SigCgt, it is a bit-map which means the position of one corresponds to the value of signal number. Next I checked the man page to see what the signal number means.
+
+d. 10,000
+From: On terminal run the command ‘strace -i -o output ./ques6.out’ and count the number of times the Interrupt signal is raised to find the number of loops executed.
+ 
+
+
+

@@ -1,0 +1,2 @@
+ls | wc
+cat < file > file2 

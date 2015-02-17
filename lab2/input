@@ -1,0 +1,21 @@
+add_email bhargav@gmail.com
+add_email hello@outlook.com
+add_email chippada@gmail.com
+add_email ranveer@gmail.com
+add_email bhargav@gmail.com
+add_email chips@hotmail.com
+add_email awesome@hotmail.com
+search_email ahdg@ad.com
+search_email ahdg@gmail.com
+search_email bhargav@gmail.com
+search_email chippada@gmail.com
+delete_domain adhba.com
+delete_domain outlook.com
+delete_domain outlook.com
+delete_email ada@gmail.com
+delete_email ranveer@gmail.com
+delete_email ranveer@gmail.com
+send_email bhargav@gmail.com chips@hotmail.com yeyeee
+send_email bhargav@gmail.com awesome@hotmail.com yeyeee
+send_email bhargav@gmail.com chippada@gmail.com yeyeee
+add_email nolan@yahoo.com

@@ -1,0 +1,3 @@
+ls -l 
+ps
+sleep 10

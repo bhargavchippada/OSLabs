@@ -1,0 +1,2 @@
+parallel ls ::: wew ::: pwd ::: cd test
+sequential ls ::: cd test ::: pwd
