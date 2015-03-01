@@ -145,3 +145,47 @@ extern void checkPaging(void) : tss.h (but this function is not called in main.c
 	checkPaging function here, in a file that should not be
 	modified, so that test code can rely on it being unmodified.
 ######################################################
+Question 2)
+Kernel_Thread structure:
+1) ulong_t esp :- stack pointer
+
+2) volatile ulong_t numTicks :- used by the scheduler to implement timer based preemption
+
+3) volatile ulong_t totalTime :- total time the thread spent on cpu
+
+4) int priority :- priority for scheduling purpose
+
+5) DEFINE_LINK(Thread_Queue, Kernel_Thread) :- defines previous and next fields used when a kernel thread is on a
+thread queue
+
+6) void *stackPage :- points to the kernel thread's stack page
+
+7) struct User_Context *userContext :- if non-null, points to the thread's user context, which is essentially a combined code and data segment allowing the thread to execute a user mode program
+
+8) struct Kernel_Thread * :- pointer to the parent thread
+
+9) int affinity :- prefered core = AFFINITY_ANY_CORE -> can run on any core
+
+10) int refCount :- The thread has an implicit self-reference. If the thread is not detached, then its owner also has a reference to it so Wait will work. refCount = detached ? 1 : 2;
+
+11) int detached :- detached indicates whether the parent thread will wait for the child thread to exit. If true, then the parent must call the Join() function to wait for the child. If false, then the parent must not call Join().
+
+12) int pid :- The kernel thread id; also used as process id
+
+/* These fields are used to implement the Join() function */
+
+13) bool alive :- whether or not this thread is dead
+
+14) struct Thread_Queue joinQueue :- queue of the threads to be exited
+
+15) int exitCode :- exit code of this thread
+/**********************************************************/
+
+16) DEFINE_LINK(All_Thread_List, Kernel_Thread) :- Link fields for list of all threads in the system
+
+17)	#define MAX_TLOCAL_KEYS 128 :- max number of temporary local keys for this thread
+
+18) const void *tlocalData[MAX_TLOCAL_KEYS] :- Array of MAX_TLOCAL_KEYS pointers to thread-local data
+
+19) char threadName[20] :- name of the thread program
+######################################################
