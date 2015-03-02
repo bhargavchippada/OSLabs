@@ -162,7 +162,7 @@ thread queue
 
 7) struct User_Context *userContext :- if non-null, points to the thread's user context, which is essentially a combined code and data segment allowing the thread to execute a user mode program
 
-8) struct Kernel_Thread * :- pointer to the parent thread
+8) struct Kernel_Thread *owner:- pointer to the parent thread
 
 9) int affinity :- prefered core = AFFINITY_ANY_CORE -> can run on any core
 
@@ -176,7 +176,7 @@ thread queue
 
 13) bool alive :- whether or not this thread is dead
 
-14) struct Thread_Queue joinQueue :- queue of the threads to be exited
+14) struct Thread_Queue joinQueue :- queue of the threads to be exited before this
 
 15) int exitCode :- exit code of this thread
 /**********************************************************/
@@ -202,5 +202,51 @@ Question 4)
 In question 2 the check.c main body calls the function Read_Line which in turn calls the function Get_Key() which is a wrapper function for the syscall SYS_GETKEY, Sys_GetKey calls the function Wait_For_Key() which waits for a keycode to arrive, it uses the keyboard wait queue to sleep until a keycode arrives. When a syscall is made by the thread then it is put to sleep in the wait queue and the scheduler is invoked to run another thread. When an I/O interrupt occurs later the interrupt handler will process it and select the thread which was waiting for it and change its state accordingly, now scheduler thread is invoked again.
 ######################################################
 Question 5)
+Fork should do the following:
+	a) Clone the calling process, creating an exact copy.
+	b) Return -1 for errors, 0 to the new process, and the process ID of the new process to the old process.
+Create a wrapper function called Fork() for the syscall SYS_FORK.
+Inside the Sys_Fork method, create a new user thread which is a copy of the current_thread kernel_thread data structure and add it to ready threadQueue.
+The only difference in the code of the parent program and its fork child will be the return value as described above, their code segment is changed according. 
+For the new child thread initialize its kernel_thread structure as follows:
+1) ulong_t esp :- pointer to the same place in the copied stack of its parent
 
+2) volatile ulong_t numTicks :- 0
+
+3) volatile ulong_t totalTime :- 0
+4) int priority :- priority of parent
+
+5) DEFINE_LINK(Thread_Queue, Kernel_Thread) :- defines previous and next fields used when a kernel thread is on a
+thread queue
+
+6) void *stackPage :- points to the copied kernel thread's stack page
+
+7) struct User_Context *userContext :- null
+
+8) struct Kernel_Thread *owner:- pointer to the parent thread
+
+9) int affinity :- affinity of parent
+
+10) int refCount :- 2
+
+11) int detached :- 1
+
+12) int pid :- new pid of this child thread
+
+/* These fields are used to implement the Join() function */
+
+13) bool alive :- true
+
+14) struct Thread_Queue joinQueue :- queue of the threads to be exited before this
+
+15) int exitCode :- exit code of this thread
+/**********************************************************/
+
+16) DEFINE_LINK(All_Thread_List, Kernel_Thread) :- Link fields for list of all threads in the system
+
+17)	#define MAX_TLOCAL_KEYS 128 :- max number of temporary local keys for this thread
+
+18) const void *tlocalData[MAX_TLOCAL_KEYS] :- pointer to the copy of tlocalData array of its parent.
+
+19) char threadName[20] :- name of the thread program
 ######################################################
