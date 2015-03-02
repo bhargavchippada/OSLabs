@@ -9,6 +9,6 @@ int main(){
     int count;
     count = Get_Syscalls_Count();
     Print("Number of syscalls: %d\n",count);
-    Sys_DisplayInfo();
+    count = Sys_DisplayInfo();
     return 0;
 }

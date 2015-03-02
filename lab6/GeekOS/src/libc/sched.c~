@@ -24,4 +24,4 @@ DEF_SYSCALL(Alarm, SYS_ALARM, int, (unsigned int mseconds),
 DEF_SYSCALL(Get_NewToD, SYS_NEWTOD, int, (int *value),int* arg0 = value;, SYSCALL_REGS_1)
 
 DEF_SYSCALL(Get_Syscalls_Count, SYS_SYSCOUNT, int, (void),, SYSCALL_REGS_0)
-DEF_SYSCALL(Sys_DisplayInfo, SYS_DISPLAYINFO, int, (void),, SYSCALL_REGS_0)
+DEF_SYSCALL(Sys_DisplayInfo, SYS_DISPLAYINFO, void, (void),, SYSCALL_REGS_0)

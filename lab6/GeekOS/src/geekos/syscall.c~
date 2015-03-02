@@ -56,7 +56,7 @@ static int Sys_SysCount(struct Interrupt_State *state __attribute__ ((unused))) 
 /*
  * Returns the number of syscalls by this process
  */
-static int Sys_DisplayInfo(struct Interrupt_State *state __attribute__ ((unused))) {
+static void Sys_DisplayInfo(struct Interrupt_State *state __attribute__ ((unused))) {
     Print("Number of Syscalls: %d\n",CURRENT_THREAD->syscallsCount);
     Print("Number of File Opens: %d\n",CURRENT_THREAD->filesOpenCount);
     Print("Number of Read Operations: %d\n",CURRENT_THREAD->readCount);
