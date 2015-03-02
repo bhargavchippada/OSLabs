@@ -167,7 +167,6 @@ static void Mount_Root_Filesystem(void) {
         Print("Failed to mount /" ROOT_PREFIX " filesystem\n");
     else
         Print("Mounted /" ROOT_PREFIX " filesystem!\n");
-
 }
 
 

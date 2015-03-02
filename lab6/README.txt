@@ -188,4 +188,19 @@ thread queue
 18) const void *tlocalData[MAX_TLOCAL_KEYS] :- Array of MAX_TLOCAL_KEYS pointers to thread-local data
 
 19) char threadName[20] :- name of the thread program
+
+
+2nd Part:
+We have written a user program called "check.c" which is spawned as a kernel thread by shell.c before executing it's shell terminal code. check.c thread takes an input and checks it with the password from the Password.txt file and exits with an appropriate code. shell.c exits if exitCode of check.c is not zero else it will execute the rest of its body.
+
+######################################################
+Question 3)
+In GeekOS, there is just one struct that is common to all kinds of threads. That struct is "Kernel_Thread".
+The way you distinguish between a User thread and a Kernel thread is by its fields. Some fields are applicable for User threads whereas some fields are necessary only for Kernel threads. As an example, we take the priority field. A Kernel thread is managed by the process scheduler and so, it carries a priority value. Whereas, a User thread doesn't need a priority value since it doesn't need to be scheduled; it's managed inside the process context itself. A User Thread carries a user context whereas a Kernel thread doesn't. User context is a user mode context which can be attached to a Kernel_Thread, to allow it to execute in user mode. This struct has all information needed to create and manage a user memory space, as well as other kernel resources used by the process (such as semaphores and files).
+######################################################
+Question 4)
+In question 2 the check.c main body calls the function Read_Line which in turn calls the function Get_Key() which is a wrapper function for the syscall SYS_GETKEY, Sys_GetKey calls the function Wait_For_Key() which waits for a keycode to arrive, it uses the keyboard wait queue to sleep until a keycode arrives. When a syscall is made by the thread then it is put to sleep in the wait queue and the scheduler is invoked to run another thread. When an I/O interrupt occurs later the interrupt handler will process it and select the thread which was waiting for it and change its state accordingly, now scheduler thread is invoked again.
+######################################################
+Question 5)
+
 ######################################################
