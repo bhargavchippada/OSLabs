@@ -152,6 +152,7 @@ void Main(struct Boot_Info *bootInfo) {
     TODO_P(PROJECT_SOUND, "play startup sound");
 
     Spawn_Init_Process();
+    //Spawn_Init_Process();
 
     /* it's time to shutdown the system */
     Hardware_Shutdown();
