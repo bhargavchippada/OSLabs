@@ -24,9 +24,6 @@
 
 #define BUFSIZE 79
 #define DEFAULT_PATH "/c:/a"
-#define PASSWORD_PATH "/c/password.txt"
-
-
 
 #define ISSPACE(c) ((c) == ' ' || (c) == '\t')
 
@@ -40,8 +37,7 @@ char *Strip_Leading_Whitespace(char *s);
 void Trim_Newline(char *s);
 char *Copy_Token(char *token, char *s);
 void Spawn_Single_Command(struct Process *proc, const char *path);
-void Check_Password();
-static void Print_Error(const char *msg, int err);
+void Spawn_Check_Command(struct Process *proc, const char *path);
 
 bool Identify_and_Strip_Ampersand(char *command) {
     char *c;
@@ -55,11 +51,6 @@ bool Identify_and_Strip_Ampersand(char *command) {
         return true;
     }
     return false;
-}
-
-static void Print_Error(const char *msg, int err) {
-    Print("%s: %s\n", msg, Get_Error_String(err));
-    Exit(1);
 }
 
 bool background;                /* making it global is lame, but keeps the signatures unaltered */
@@ -76,7 +67,13 @@ int main(int argc __attribute__ ((unused)), char **argv
     /* Set attribute to gray on black. */
     Print("\x1B[37m");
 
-    Check_Password();
+    //check password for authentication
+    strcpy(proc.command,"check");
+    if (!Copy_Token(proc.program, proc.command)) {
+        Print("Error: invalid command\n");
+        Exit(1);
+    }
+    Spawn_Check_Command(&proc, path);
 
     while (true) {
         /* Print shell prompt (bright cyan on black background) */
@@ -187,46 +184,15 @@ void Spawn_Single_Command(struct Process *proc, const char *path) {
     }
 }
 
-void Check_Password(){
-    char commandBuf[BUFSIZE + 1];
-    char *command;
+void Spawn_Check_Command(struct Process *proc, const char *path) {
+    int pid;
 
-    int password_fd;
-    char buffer[BUFSIZE + 1];
-    char *password;
-    int ret;
-    int read;
-
-    /************************check for password*************************/
-
-    // read password from file
-    password_fd = Open(PASSWORD_PATH, O_READ);
-    if (password_fd < 0) Print_Error("Could not open file", password_fd);
-    ret = Read(password_fd, buffer, sizeof(buffer) - 1);
-    if (ret < 0) Print_Error("error reading password file", ret);
-
-    buffer[ret] = '\0';
-    password = Strip_Leading_Whitespace(buffer);
-    Trim_Newline(password);
-    //Print("Real password: %s", buffer);
-
-    if (Close(password_fd) < 0) Print_Error("Could not close file", password_fd);
-
-
-    /* Print shell prompt (bright cyan on black background) */
-    Print("\x1B[1;36m$\x1B[37m Type password: ");
-    /* Read a line of input */
-    Read_Line(commandBuf, sizeof(commandBuf));
-    command = Strip_Leading_Whitespace(commandBuf);
-    Trim_Newline(command);
-    
-    //Print("Typed password: %s", command);
-    if (strcmp(command, password) != 0) {
-        /* Exit the shell, not authenticated */
-        Print_Error("Authentication Failed!",-11);
-    }else{
-        Print("Authentication Success!\n");
+    pid = proc->pid = Spawn_With_Path(proc->program, proc->command, path, false);
+    if (pid < 0) {
+        Print("Could not spawn process: %s\n", Get_Error_String(pid));
+        Exit(pid);
+    } else {
+        int exitCode = Wait(pid);
+        if (exitCode != 0) Exit(exitCode);
     }
-
-    /*******************************************************************/
 }
