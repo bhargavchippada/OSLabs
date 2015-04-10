@@ -6,6 +6,7 @@
 using namespace std;
 
 int qNo;
+pthread_cond_t flightMutex[10];
 
 struct flight
 {
@@ -94,6 +95,17 @@ void *sThread(void *tname)
 	}
 	else cout << "Invlid Op!\n";
 }
+
+struct query{
+	int actionNo;
+	int flightNo;
+	query(int ano, int fno){
+		actionNo = ano;
+		flightNo = fno;
+	}
+};
+
+vector<query> queries;
 
 void *executeSlaves(void *mId)
 {
