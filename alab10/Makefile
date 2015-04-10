@@ -1,6 +1,6 @@
 .PHONY: all clean
 
 all:
-	g++ -pthread main.cpp 
+	g++ -std=c++11 -pthread main.cpp
 clean:
 	rm a.out

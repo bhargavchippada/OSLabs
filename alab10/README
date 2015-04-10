@@ -2,5 +2,5 @@ Ranveer Aggarwal 120050020
 Bhargav Chippada 120050053
 
 Late Submission: Everything works. The transactions are in the transactions.txt file.
-To compile, run `make`
+To compile, run `make` or g++ -std=c++11 -pthread main.cpp
 To run, run `./a.out`

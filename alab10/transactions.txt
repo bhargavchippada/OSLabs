@@ -1,4 +1,4 @@
-check 2
+status 2
 cancel 2
 book 2
 book 2
@@ -12,6 +12,6 @@ book 1
 cancel 2
 book 7
 book 8
-check 8
+status 8
 book 9
 book 9
