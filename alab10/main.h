@@ -5,8 +5,8 @@
 #include <pthread.h>
 using namespace std;
 
-int qNo;
 pthread_mutex_t flightMutex[10];
+pthread_t threads[5];
 
 struct flight
 {
@@ -110,27 +110,3 @@ struct query{
 };
 
 vector<query> queries;
-
-void *executeSlaves(void *mId)
-{
-
-}
-
-struct mThread
-{
-	pthread_t master;
-	pthread_t threads[5];
-	queue<int> jobList;
-	int slaveCounter;
-	mThread()
-	{
-		int mId = 0;
-		pthread_create(&master, NULL, executeSlaves, (void *)&mId);
-		for (long i = 0; i < 5; ++i)
-		{
-			pthread_create(&threads[i], NULL, sThread, (void *)&i);
-		}
-	}
-};
-
-mThread *batman = new mThread();

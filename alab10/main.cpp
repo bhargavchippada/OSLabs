@@ -1,9 +1,16 @@
 #include "main.h"
 
 extern vector<flight*> flights;
-extern mThread *batman;
 extern pthread_mutex_t flightMutex[10];
 extern vector<query> queries;
+extern pthread_t threads[5];
+int qNo = 0;
+
+void *executeSlaves(void *mId)
+{
+	//allocate thread 
+	//tell thread to execute sThread(qNo)
+}
 
 int main()
 {
@@ -31,4 +38,12 @@ int main()
 	queries.push_back(*(new query(2,1)));
 	queries.push_back(*(new query(2,1)));
 
+	pthread_t master;
+	
+	int mId = 0;
+	pthread_create(&master, NULL, executeSlaves, (void *)&mId);
+	for (long i = 0; i < 5; ++i)
+	{
+		pthread_create(&threads[i], NULL, sThread, (void *)&i);
+	}
 }
