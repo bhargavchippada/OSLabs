@@ -2,7 +2,7 @@
 
 extern vector<flight*> flights;
 extern mThread *batman;
-extern pthread_mutex_t flightMutex[10];
+extern pthread_cond_t flightMutex[10];
 extern vector<query> queries;
 
 int main()
