@@ -5,8 +5,21 @@
 #include <pthread.h>
 using namespace std;
 
+int qNo = 0;
 pthread_mutex_t flightMutex[10];
 pthread_t threads[5];
+
+
+struct query{
+	int actionNo;
+	int flightNo;
+	query(int ano, int fno){
+		actionNo = ano;
+		flightNo = fno;
+	}
+};
+
+vector<query> queries;
 
 struct flight
 {
@@ -61,8 +74,8 @@ vector<flight*> flights;
 void *sThread(void *tname)
 {
 	long name = *(long*)tname;
-	int q;
-	int flightNo;
+	int q = queries[qNo].actionNo;
+	int flightNo = queries[qNo].flightNo;
 	//Read from file
 	if (q == 1)
 	{
@@ -98,15 +111,5 @@ void *sThread(void *tname)
 		}
 	}
 	else cout << "Invlid Op!\n";
+	qNo++;
 }
-
-struct query{
-	int actionNo;
-	int flightNo;
-	query(int ano, int fno){
-		actionNo = ano;
-		flightNo = fno;
-	}
-};
-
-vector<query> queries;

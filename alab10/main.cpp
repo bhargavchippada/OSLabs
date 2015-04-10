@@ -1,15 +1,24 @@
+#include <cstdlib>
 #include "main.h"
 
 extern vector<flight*> flights;
 extern pthread_mutex_t flightMutex[10];
 extern vector<query> queries;
 extern pthread_t threads[5];
-int qNo = 0;
+extern pthread_cond_t pthreadCond[5];
+extern int qNo;
+
 
 void *executeSlaves(void *mId)
 {
 	//allocate thread 
 	//tell thread to execute sThread(qNo)
+	while(1){
+		if(qNo < queries.size()){
+			int i = 0;
+			pthread_create(&threads[i], NULL, sThread, (void *)&i);
+		}
+	}
 }
 
 int main()
@@ -42,8 +51,11 @@ int main()
 	
 	int mId = 0;
 	pthread_create(&master, NULL, executeSlaves, (void *)&mId);
+	/*
 	for (long i = 0; i < 5; ++i)
 	{
 		pthread_create(&threads[i], NULL, sThread, (void *)&i);
 	}
+	*/
+
 }
