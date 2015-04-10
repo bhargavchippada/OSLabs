@@ -5,6 +5,8 @@
 #include <pthread.h>
 using namespace std;
 
+int qNo;
+
 struct flight
 {
 	string name;
@@ -51,14 +53,13 @@ struct flight
 
 vector<flight*> flights;
 
-struct sThread
+void *sThread(void *tname)
 {
-	string name;
-	sThread(string threadname)
-	{
-		name = threadname;
-	}
-	void bookFlight(int flightNo)
+	long name = *(long*)tname;
+	int q;
+	int flightNo;
+	//Read from file
+	if (q == 1)
 	{
 		if (flights[flightNo]->book()) 
 		{
@@ -69,7 +70,7 @@ struct sThread
 			cout << "Booking failed on flight " << flightNo << " using thread " << name << ". Please try another flight.\n";
 		}
 	}
-	void checkStatus(int flightNo)
+	else if (q == 0)
 	{
 		if (flights[flightNo]->checkIfAvail())
 		{
@@ -80,7 +81,7 @@ struct sThread
 			cout << "We're sorry, but seats aren't available on flight " << flightNo << " (checked by thread " << name << ").\n";
 		}
 	}
-	void cancelFlight(int flightNo)
+	else if (q == 2)
 	{
 		if (flights[flightNo]->cancel()) 
 		{
@@ -91,41 +92,27 @@ struct sThread
 			cout << "Whoops! No seat was cancelled on flight " << flightNo << ". Please check again.\n";
 		}
 	}
-};
+	else cout << "Invlid Op!\n";
+}
+
+void *executeSlaves(void *mId)
+{
+
+}
 
 struct mThread
 {
-	vector<sThread*> slaves;
+	pthread_t master;
+	pthread_t threads[5];
 	queue<int> jobList;
 	int slaveCounter;
 	mThread()
 	{
-		slaves.push_back(new sThread("IronMan"));
-		slaves.push_back(new sThread("Hulk"));
-		slaves.push_back(new sThread("BlackWidow"));
-		slaves.push_back(new sThread("Thor"));
-		slaves.push_back(new sThread("Loki"));
-		slaveCounter = 5;
-	}
-	int freeSlave()
-	{
-		//return a random free slave
-		return 0;
-	}
-	void execQuery(int query, int slaveNo)
-	{
-
-	}
-	void getQuery(int query)
-	{
-		if (slaveCounter == 5)
+		int mId = 0;
+		pthread_create(&master, NULL, executeSlaves, (void *)&mId);
+		for (long i = 0; i < 5; ++i)
 		{
-			jobList.push(query);
-		}
-		else
-		{
-			execQuery(query, freeSlave());
-			slaveCounter++;
+			pthread_create(&threads[i], NULL, sThread, (void *)&i);
 		}
 	}
 };
