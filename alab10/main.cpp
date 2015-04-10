@@ -21,5 +21,17 @@ int main()
 		//flightMutex[i]=PTHREAD_MUTEX_INITIALIZER;
 	}
 
-	//queries.push_back(*(new query()));
+	queries.push_back(*(new query(0,1)));
+	queries.push_back(*(new query(2,3)));
+	queries.push_back(*(new query(1,2)));
+	queries.push_back(*(new query(2,5)));
+	queries.push_back(*(new query(1,4)));
+	queries.push_back(*(new query(1,5)));
+	queries.push_back(*(new query(1,6)));
+	queries.push_back(*(new query(1,1)));
+	queries.push_back(*(new query(1,2)));
+	queries.push_back(*(new query(0,2)));
+	queries.push_back(*(new query(2,1)));
+	queries.push_back(*(new query(2,1)));
+
 }
