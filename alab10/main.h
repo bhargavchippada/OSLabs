@@ -6,14 +6,14 @@
 using namespace std;
 
 int qNo;
-pthread_cond_t flightMutex[10];
+pthread_mutex_t flightMutex[10];
 
 struct flight
 {
-	string name;
+	int name;
 	int maxSeatCount;
 	int availSeatCount;
-	flight(string n, int maxSeatCount)
+	flight(int n, int maxSeatCount)
 	{
 		name = n;
 		availSeatCount = maxSeatCount;
@@ -34,7 +34,9 @@ struct flight
 		}
 		else
 		{
+			pthread_mutex_lock (&flightMutex[name]);
 			availSeatCount--;
+			pthread_mutex_unlock (&flightMutex[name]);
 			return true;
 		}
 	}
@@ -46,7 +48,9 @@ struct flight
 		}
 		else
 		{
+			pthread_mutex_lock (&flightMutex[name]);
 			availSeatCount++;
+			pthread_mutex_unlock (&flightMutex[name]);
 			return true;
 		}
 	}
