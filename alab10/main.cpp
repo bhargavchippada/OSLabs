@@ -1,5 +1,7 @@
 #include "main.h"
-vector<flight> flights;
+
+extern vector<flight*> flights;
+extern mThread *batman;
 
 int main()
 {
@@ -13,14 +15,14 @@ int main()
 	flight *f7 = new flight("Flight7", 2);
 	flight *f8 = new flight("Flight8", 23);
 	flight *f9 = new flight("Flight9", 12);
-	flights.push_back(*f0);
-	flights.push_back(*f1);
-	flights.push_back(*f2);
-	flights.push_back(*f3);
-	flights.push_back(*f4);
-	flights.push_back(*f5);
-	flights.push_back(*f6);
-	flights.push_back(*f7);
-	flights.push_back(*f8);
-	flights.push_back(*f9);
+	flights.push_back(f0);
+	flights.push_back(f1);
+	flights.push_back(f2);
+	flights.push_back(f3);
+	flights.push_back(f4);
+	flights.push_back(f5);
+	flights.push_back(f6);
+	flights.push_back(f7);
+	flights.push_back(f8);
+	flights.push_back(f9);
 }
