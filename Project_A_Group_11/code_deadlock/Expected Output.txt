@@ -1,0 +1,7 @@
+A allocated to P1 at 1
+B allocated to P2 at 2
+C allocated to P3 at 3
+P1 requests B at 4
+P2 requests C at 5
+P3 requests A at 6
+Deadlock detected among P1,P2,P3
